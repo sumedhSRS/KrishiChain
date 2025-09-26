@@ -29,7 +29,7 @@ class KrishiChainApp {
           farmer: {
             productName: 'Basmati Rice',
             quantity: '100kg',
-            farmerPrice: 80,
+    
             farmLocation: 'Punjab',
             harvestDate: '2025-09-15',
             farmerName: 'Rajesh Kumar'
@@ -37,7 +37,7 @@ class KrishiChainApp {
           distributor: {
             distributorName: 'Punjab Grains Ltd',
             storageLocation: 'Delhi Warehouse',
-            distributorMargin: 15,
+            productRating: 5,
             transportDate: '2025-09-17'
           },
           retailer: {
@@ -53,7 +53,7 @@ class KrishiChainApp {
           farmer: {
             productName: 'Wheat',
             quantity: '200kg',
-            farmerPrice: 25,
+    
             farmLocation: 'Haryana',
             harvestDate: '2025-09-10',
             farmerName: 'Priya Sharma'
@@ -61,7 +61,7 @@ class KrishiChainApp {
           distributor: {
             distributorName: 'Haryana Distributors',
             storageLocation: 'Gurgaon Hub',
-            distributorMargin: 8,
+            productRating: 4,
             transportDate: '2025-09-12'
           },
           timestamp: Date.now()
@@ -270,6 +270,14 @@ class KrishiChainApp {
     }
   }
 
+  
+  // Helper function to display star rating
+  getStarRating(rating) {
+    const stars = '⭐'.repeat(rating);
+    const ratingText = ['', 'Poor', 'Fair', 'Good', 'Very Good', 'Excellent'][rating];
+    return `${stars} (${ratingText})`;
+  }
+
   // Handle farmer form submission - Fixed
   handleFarmerSubmission() {
     console.log('Handling farmer submission');
@@ -277,12 +285,11 @@ class KrishiChainApp {
     // Get form values
     const productName = document.getElementById('product-name')?.value?.trim();
     const quantity = document.getElementById('quantity')?.value?.trim();
-    const farmerPriceValue = document.getElementById('farmer-price')?.value?.trim();
     const farmLocation = document.getElementById('farm-location')?.value?.trim();
     const harvestDate = document.getElementById('harvest-date')?.value?.trim();
 
     // Validate inputs
-    if (!productName || !quantity || !farmerPriceValue || !farmLocation || !harvestDate) {
+    if (!productName || !quantity || !farmLocation || !harvestDate) {
       alert('Please fill in all fields');
       return;
     }
@@ -290,7 +297,6 @@ class KrishiChainApp {
     const formData = {
       productName: productName,
       quantity: quantity,
-      farmerPrice: parseFloat(farmerPriceValue),
       farmLocation: farmLocation,
       harvestDate: harvestDate,
       farmerName: 'Current Farmer'
@@ -347,7 +353,6 @@ class KrishiChainApp {
         </div>
         <div class="product-details">
           <div class="product-detail"><strong>Quantity:</strong> <span>${product.farmer.quantity}</span></div>
-          <div class="product-detail"><strong>Price:</strong> <span>₹${product.farmer.farmerPrice}</span></div>
           <div class="product-detail"><strong>Location:</strong> <span>${product.farmer.farmLocation}</span></div>
           <div class="product-detail"><strong>Harvest Date:</strong> <span>${product.farmer.harvestDate}</span></div>
         </div>
@@ -386,7 +391,7 @@ class KrishiChainApp {
           <div class="stage-details">
             <div class="stage-detail"><strong>Product:</strong> <span>${product.farmer.productName}</span></div>
             <div class="stage-detail"><strong>Quantity:</strong> <span>${product.farmer.quantity}</span></div>
-            <div class="stage-detail"><strong>Price:</strong> <span>₹${product.farmer.farmerPrice}</span></div>
+            
             <div class="stage-detail"><strong>Farm Location:</strong> <span>${product.farmer.farmLocation}</span></div>
             <div class="stage-detail"><strong>Harvest Date:</strong> <span>${product.farmer.harvestDate}</span></div>
             <div class="stage-detail"><strong>Farmer:</strong> <span>${product.farmer.farmerName}</span></div>
@@ -412,10 +417,10 @@ class KrishiChainApp {
 
     const distributorName = document.getElementById('distributor-name')?.value?.trim();
     const storageLocation = document.getElementById('storage-location')?.value?.trim();
-    const distributorMarginValue = document.getElementById('distributor-margin')?.value?.trim();
+    const productRating = document.getElementById('product-rating')?.value?.trim();
     const transportDate = document.getElementById('transport-date')?.value?.trim();
 
-    if (!distributorName || !storageLocation || !distributorMarginValue || !transportDate) {
+    if (!distributorName || !storageLocation || !productRating || !transportDate) {
       alert('Please fill in all fields');
       return;
     }
@@ -423,7 +428,7 @@ class KrishiChainApp {
     const distributorData = {
       distributorName: distributorName,
       storageLocation: storageLocation,
-      distributorMargin: parseFloat(distributorMarginValue),
+      productRating: parseInt(productRating),
       transportDate: transportDate
     };
 
@@ -492,7 +497,7 @@ class KrishiChainApp {
           <div class="stage-details">
             <div class="stage-detail"><strong>Product:</strong> <span>${product.farmer.productName}</span></div>
             <div class="stage-detail"><strong>Quantity:</strong> <span>${product.farmer.quantity}</span></div>
-            <div class="stage-detail"><strong>Farm Price:</strong> <span>₹${product.farmer.farmerPrice}</span></div>
+            
             <div class="stage-detail"><strong>Farm Location:</strong> <span>${product.farmer.farmLocation}</span></div>
             <div class="stage-detail"><strong>Harvest Date:</strong> <span>${product.farmer.harvestDate}</span></div>
             <div class="stage-detail"><strong>Farmer:</strong> <span>${product.farmer.farmerName}</span></div>
@@ -506,7 +511,7 @@ class KrishiChainApp {
           <div class="stage-details">
             <div class="stage-detail"><strong>Distributor:</strong> <span>${product.distributor.distributorName}</span></div>
             <div class="stage-detail"><strong>Storage:</strong> <span>${product.distributor.storageLocation}</span></div>
-            <div class="stage-detail"><strong>Added Margin:</strong> <span>₹${product.distributor.distributorMargin}</span></div>
+            <div class="stage-detail"><strong>Product Rating:</strong> <span>${this.getStarRating(product.distributor.productRating)}</span></div>
             <div class="stage-detail"><strong>Transport Date:</strong> <span>${product.distributor.transportDate}</span></div>
           </div>
         </div>
@@ -576,105 +581,93 @@ class KrishiChainApp {
     }
   }
 
-  // Verify product for customers - Enhanced
-  verifyProduct() {
-    const qrInput = document.getElementById('customer-qr');
-    if (!qrInput) return;
-    
-    const qr = qrInput.value.trim();
-    if (!qr) {
-      alert('Please enter a QR code');
-      return;
-    }
-
-    const products = this.getProducts();
-    const product = products.find(p => p.qr === qr && p.stage === 'customer');
-
-    if (!product) {
-      alert('Invalid QR code or product not found');
-      return;
-    }
-
-    const resultDiv = document.getElementById('verification-result');
-    const journeyDiv = document.getElementById('complete-journey');
-
-    if (!resultDiv || !journeyDiv) return;
-
-    // Calculate margins
-    const farmerPrice = product.farmer.farmerPrice;
-    const distributorMargin = product.distributor.distributorMargin;
-    const finalPrice = product.retailer.finalPrice;
-    const retailerMargin = finalPrice - (farmerPrice + distributorMargin);
-
-    journeyDiv.innerHTML = `
-      <div class="journey-stage">
-        <div class="stage-header">
-          <h4 class="stage-title">👨‍🌾 Farm Origin</h4>
-          <div class="status status--success">Verified</div>
-        </div>
-        <div class="stage-details">
-          <div class="stage-detail"><strong>Product:</strong> <span>${product.farmer.productName}</span></div>
-          <div class="stage-detail"><strong>Quantity:</strong> <span>${product.farmer.quantity}</span></div>
-          <div class="stage-detail"><strong>Farm Price:</strong> <span>₹${farmerPrice}</span></div>
-          <div class="stage-detail"><strong>Farm Location:</strong> <span>${product.farmer.farmLocation}</span></div>
-          <div class="stage-detail"><strong>Harvest Date:</strong> <span>${product.farmer.harvestDate}</span></div>
-          <div class="stage-detail"><strong>Farmer:</strong> <span>${product.farmer.farmerName}</span></div>
-        </div>
-      </div>
-
-      <div class="journey-stage">
-        <div class="stage-header">
-          <h4 class="stage-title">🚚 Distribution</h4>
-          <div class="status status--success">Verified</div>
-        </div>
-        <div class="stage-details">
-          <div class="stage-detail"><strong>Distributor:</strong> <span>${product.distributor.distributorName}</span></div>
-          <div class="stage-detail"><strong>Storage:</strong> <span>${product.distributor.storageLocation}</span></div>
-          <div class="stage-detail"><strong>Added Margin:</strong> <span>₹${distributorMargin}</span></div>
-          <div class="stage-detail"><strong>Transport Date:</strong> <span>${product.distributor.transportDate}</span></div>
-        </div>
-      </div>
-
-      <div class="journey-stage">
-        <div class="stage-header">
-          <h4 class="stage-title">🏪 Retail</h4>
-          <div class="status status--success">Verified</div>
-        </div>
-        <div class="stage-details">
-          <div class="stage-detail"><strong>Shop:</strong> <span>${product.retailer.shopName}</span></div>
-          <div class="stage-detail"><strong>Location:</strong> <span>${product.retailer.retailLocation}</span></div>
-          <div class="stage-detail"><strong>Final Price:</strong> <span>₹${finalPrice}</span></div>
-          <div class="stage-detail"><strong>Retail Margin:</strong> <span>₹${retailerMargin}</span></div>
-        </div>
-      </div>
-
-      <div class="price-breakdown">
-        <h4>💰 Price Breakdown</h4>
-        <div class="price-item">
-          <span>Farmer Price:</span>
-          <span>₹${farmerPrice}</span>
-        </div>
-        <div class="price-item">
-          <span>Distribution Margin:</span>
-          <span>₹${distributorMargin}</span>
-        </div>
-        <div class="price-item">
-          <span>Retail Margin:</span>
-          <span>₹${retailerMargin}</span>
-        </div>
-        <div class="price-item total">
-          <span>Final Price:</span>
-          <span>₹${finalPrice}</span>
-        </div>
-      </div>
-
-      <div class="map-placeholder">
-        🗺️ Journey Map: ${product.farmer.farmLocation} → ${product.distributor.storageLocation} → ${product.retailer.retailLocation}
-      </div>
-    `;
-
-    resultDiv.classList.remove('hidden');
+  // Verify product for customers - Updated with Product Breakdown and Ratings
+verifyProduct() {
+  const qrInput = document.getElementById('customer-qr');
+  if (!qrInput) return;
+  
+  const qr = qrInput.value.trim();
+  if (!qr) {
+    alert('Please enter a QR code');
+    return;
   }
+
+  const products = this.getProducts();
+  const product = products.find(p => p.qr === qr && p.stage === 'customer');
+
+  if (!product) {
+    alert('Invalid QR code or product not found');
+    return;
+  }
+
+  const resultDiv = document.getElementById('verification-result');
+  const journeyDiv = document.getElementById('complete-journey');
+
+  if (!resultDiv || !journeyDiv) return;
+
+  const finalPrice = product.retailer.finalPrice;
+  const productRating = product.distributor.productRating || 5;
+
+  journeyDiv.innerHTML = `
+    <div class="journey-stage">
+      <div class="stage-header">
+        <h4 class="stage-title">👨‍🌾 Farm Origin</h4>
+        <div class="status status--success">Verified</div>
+      </div>
+      <div class="stage-details">
+        <div class="stage-detail"><strong>Product:</strong> <span>${product.farmer.productName}</span></div>
+        <div class="stage-detail"><strong>Quantity:</strong> <span>${product.farmer.quantity}</span></div>
+        <div class="stage-detail"><strong>Farm Location:</strong> <span>${product.farmer.farmLocation}</span></div>
+        <div class="stage-detail"><strong>Harvest Date:</strong> <span>${product.farmer.harvestDate}</span></div>
+        <div class="stage-detail"><strong>Farmer:</strong> <span>${product.farmer.farmerName}</span></div>
+      </div>
+    </div>
+
+    <div class="journey-stage">
+      <div class="stage-header">
+        <h4 class="stage-title">🚚 Distribution</h4>
+        <div class="status status--success">Verified</div>
+      </div>
+      <div class="stage-details">
+        <div class="stage-detail"><strong>Distributor:</strong> <span>${product.distributor.distributorName}</span></div>
+        <div class="stage-detail"><strong>Storage:</strong> <span>${product.distributor.storageLocation}</span></div>
+        <div class="stage-detail"><strong>Product Rating:</strong> <span>${this.getStarRating(productRating)}</span></div>
+        <div class="stage-detail"><strong>Transport Date:</strong> <span>${product.distributor.transportDate}</span></div>
+      </div>
+    </div>
+
+    <div class="journey-stage">
+      <div class="stage-header">
+        <h4 class="stage-title">🏪 Retail</h4>
+        <div class="status status--success">Verified</div>
+      </div>
+      <div class="stage-details">
+        <div class="stage-detail"><strong>Shop:</strong> <span>${product.retailer.shopName}</span></div>
+        <div class="stage-detail"><strong>Location:</strong> <span>${product.retailer.retailLocation}</span></div>
+        <div class="stage-detail"><strong>Final Price:</strong> <span>₹${finalPrice}</span></div>
+      </div>
+    </div>
+
+    <div class="price-breakdown">
+      <h4>📊 Product Breakdown</h4>
+      <div class="price-item">
+        <span>Product Quality:</span>
+        <span>${this.getStarRating(productRating)}</span>
+      </div>
+      <div class="price-item total">
+        <span>Final Price:</span>
+        <span>₹${finalPrice}</span>
+      </div>
+    </div>
+
+    <div class="map-placeholder">
+      🗺️ Journey Map: ${product.farmer.farmLocation} → ${product.distributor.storageLocation} → ${product.retailer.retailLocation}
+    </div>
+  `;
+
+  resultDiv.classList.remove('hidden');
+}
+
 
   // Show success modal - Enhanced
   showSuccessModal(title, message, qr) {
